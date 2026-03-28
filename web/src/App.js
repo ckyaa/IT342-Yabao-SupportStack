@@ -15,6 +15,7 @@ function App() {
   });
   const [registerStatus, setRegisterStatus] = useState({ loading: false, error: '', success: '' });
   const [authUser, setAuthUser] = useState(null);
+  const [showRegisterSuccess, setShowRegisterSuccess] = useState(false);
 
   const userName = useMemo(() => {
     if (authUser?.name) {
@@ -77,20 +78,15 @@ function App() {
 
   const onRegisterSubmit = async (event) => {
     event.preventDefault();
-
     if (registerForm.password !== registerForm.confirmPassword) {
       setRegisterStatus({ loading: false, error: 'Passwords do not match.', success: '' });
       return;
     }
-
     setRegisterStatus({ loading: true, error: '', success: '' });
-
     try {
       const response = await fetch(`${apiBaseUrl}/api/v1/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: registerForm.username,
           name: registerForm.name,
@@ -98,12 +94,10 @@ function App() {
           password: registerForm.password
         })
       });
-
       const payload = await response.json();
       if (!response.ok || payload.success === false) {
         throw new Error(payload?.error?.message || 'Registration failed.');
       }
-
       if (payload?.data) {
         setAuthUser({
           username: payload.data.username,
@@ -111,9 +105,8 @@ function App() {
           email: payload.data.email
         });
       }
-
       setRegisterStatus({ loading: false, error: '', success: 'Account created successfully.' });
-      setScreen('home');
+      setShowRegisterSuccess(true);
     } catch (error) {
       setRegisterStatus({ loading: false, error: error.message, success: '' });
     }
@@ -302,6 +295,13 @@ function App() {
             </ul>
           </section>
         </section>
+      )}
+
+      {showRegisterSuccess && (
+        <div className="notification success">
+          <span>Successful registration</span>
+          <button className="close-btn" onClick={() => { setShowRegisterSuccess(false); setScreen('home'); }}>×</button>
+        </div>
       )}
     </main>
   );

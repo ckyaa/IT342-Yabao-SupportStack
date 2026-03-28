@@ -41,6 +41,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.tilConfirmPassword.error = null
 
         // Get input values
+        val username = binding.etUsername.text.toString().trim()
         val name = binding.etName.text.toString().trim()
         val email = binding.etRegEmail.text.toString().trim()
         val password = binding.etRegPassword.text.toString()
@@ -49,6 +50,10 @@ class RegisterActivity : AppCompatActivity() {
         // Validation
         var isValid = true
 
+        if (username.isEmpty()) {
+            binding.tilUsername.error = "Username is required"
+            isValid = false
+        }
         if (name.isEmpty()) {
             binding.tilName.error = "Name is required"
             isValid = false
@@ -81,16 +86,16 @@ class RegisterActivity : AppCompatActivity() {
         if (!isValid) return
 
         // Proceed with registration API call
-        registerUser(name, email, password)
+        registerUser(username, name, email, password)
     }
 
-    private fun registerUser(name: String, email: String, password: String) {
+    private fun registerUser(username: String, name: String, email: String, password: String) {
         // Show loading state
         setLoading(true)
 
         lifecycleScope.launch {
             try {
-                val request = RegisterRequest(name, email, password)
+                val request = RegisterRequest(username, name, email, password)
                 val response = RetrofitClient.apiService.register(request)
 
                 setLoading(false)
