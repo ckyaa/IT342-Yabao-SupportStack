@@ -35,14 +35,13 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun validateAndRegister() {
         // Clear previous errors
-        binding.tilName.error = null
+        binding.tilUsername.error = null
         binding.tilRegEmail.error = null
         binding.tilRegPassword.error = null
         binding.tilConfirmPassword.error = null
 
         // Get input values
         val username = binding.etUsername.text.toString().trim()
-        val name = binding.etName.text.toString().trim()
         val email = binding.etRegEmail.text.toString().trim()
         val password = binding.etRegPassword.text.toString()
         val confirmPassword = binding.etConfirmPassword.text.toString()
@@ -52,10 +51,6 @@ class RegisterActivity : AppCompatActivity() {
 
         if (username.isEmpty()) {
             binding.tilUsername.error = "Username is required"
-            isValid = false
-        }
-        if (name.isEmpty()) {
-            binding.tilName.error = "Name is required"
             isValid = false
         }
 
@@ -86,16 +81,16 @@ class RegisterActivity : AppCompatActivity() {
         if (!isValid) return
 
         // Proceed with registration API call
-        registerUser(username, name, email, password)
+        registerUser(username, email, password, confirmPassword)
     }
 
-    private fun registerUser(username: String, name: String, email: String, password: String) {
+    private fun registerUser(username: String, email: String, password: String, confirmPassword: String) {
         // Show loading state
         setLoading(true)
 
         lifecycleScope.launch {
             try {
-                val request = RegisterRequest(username, name, email, password)
+                val request = RegisterRequest(username, email, password, confirmPassword)
                 val response = RetrofitClient.apiService.register(request)
 
                 setLoading(false)
@@ -144,7 +139,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.btnCreateAccount.text = if (isLoading) "Creating Account..." else "Create Account"
         
         // Optionally disable input fields during loading
-        binding.etName.isEnabled = !isLoading
+        binding.etUsername.isEnabled = !isLoading
         binding.etRegEmail.isEnabled = !isLoading
         binding.etRegPassword.isEnabled = !isLoading
         binding.etConfirmPassword.isEnabled = !isLoading

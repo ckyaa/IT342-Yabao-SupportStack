@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.failure("AUTH-001", ex.getMessage()));
     }
 
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTicketNotFound(TicketNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure("TICKET-404", ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleUnexpected(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

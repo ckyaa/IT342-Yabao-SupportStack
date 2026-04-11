@@ -10,11 +10,11 @@ The system includes:
 - React web application
 - Android mobile application
 
-SupportStack uses PostgreSQL (Supabase) for persistence and implements secure authentication using local credentials (username/email + password) and Google OAuth/OpenID Connect (Google Sign-In).
+SupportStack uses PostgreSQL (Supabase) for persistence and implements secure authentication using local credentials (username/email + password). Google OAuth/OpenID Connect is disabled for now while the main features are being built.
 
 ### 1.2 Objectives
 - Develop a functional ticketing system for students and staff with clear ticket lifecycle management.
-- Implement secure authentication using local credentials and Google OAuth/OpenID Connect.
+- Implement secure authentication using local credentials.
 - Enforce role-based access control for Student, Staff, and Admin users.
 - Maintain a full ticket change history (audit log) for accountability and traceability.
 - Implement soft deletion with an Admin-managed Trash view (restore + permanent delete).
@@ -26,7 +26,7 @@ SupportStack uses PostgreSQL (Supabase) for persistence and implements secure au
 #### Included Features
 - User registration and authentication (username, email, password, confirm password)
 - User login using username/password or email/password
-- Google Sign-In authentication (OAuth/OpenID Connect)
+- Google Sign-In authentication (OAuth/OpenID Connect, disabled for now)
 - Role-based access control (Student, Staff, Admin)
 - Admin-seeded initial administrator and admin role promotion (with "last admin" protection)
 - First-time login profile completion (e.g., first name, last name)
@@ -96,10 +96,10 @@ SupportStack provides a centralized ticketing workflow with role-based access, e
 7. System confirms ticket creation and sends an email notification to the student.
 8. Student views ticket status and updates over time.
 
-#### Journey 2: First-time Student Ticket Submission (Google Sign-In)
+#### Journey 2: First-time Student Ticket Submission (Google Sign-In, disabled for now)
 1. Student visits the web application.
-2. Student clicks "Continue with Google" and signs in.
-3. System verifies Google identity and creates a local Student profile automatically (JIT provisioning) if first login.
+2. Google Sign-In is disabled for now.
+3. Student uses local login instead.
 4. Student is prompted to complete profile setup (e.g., first name, last name) if required.
 5. Student creates a new support ticket.
 6. System confirms ticket creation and sends an email notification to the student.
@@ -134,8 +134,8 @@ SupportStack provides a centralized ticketing workflow with role-based access, e
 - User authentication (register, login, logout)
 - Login via username/password or email/password
 - Password hashing (BCrypt)
-- Google OAuth/OpenID Connect login
-- JIT provisioning for Google sign-in (create local user on first login)
+- Google OAuth/OpenID Connect login (disabled for now)
+- JIT provisioning for Google sign-in (disabled for now)
 - First-time login profile completion
 - Role-based access control: Student, Staff, Admin
 - Ticket creation and student ticket viewing
@@ -202,22 +202,25 @@ Security:
 - Password hashing using BCrypt
 - JWT access token for protected endpoints
 
-#### Feature: User Authentication (Google OAuth/OIDC)
+#### Feature: User Authentication (Google OAuth/OIDC, disabled for now)
 Screens:
 - Login
 
 Validation:
-- Verify Google ID token signature, issuer, audience, and expiry
+- Verify Google ID token signature, issuer, audience, and expiry (disabled for now)
 
 API Endpoints:
-- `POST /api/v1/auth/google`
+- `POST /api/v1/auth/google` (disabled for now)
 - `GET /api/v1/auth/me`
 - `POST /api/v1/auth/logout`
 
 Security:
-- Verify Google ID token
-- Issue SupportStack JWT
-- Enforce role-based authorization checks
+- Google login flow is disabled for now
+
+Configuration:
+- Web app requires `REACT_APP_GOOGLE_CLIENT_ID`
+- Backend requires `APP_GOOGLE_CLIENT_ID`
+- Google Cloud OAuth client must allow the local web origin (for example `http://localhost:3000`)
 
 #### Feature: Role and User Management (Admin)
 Screens:
