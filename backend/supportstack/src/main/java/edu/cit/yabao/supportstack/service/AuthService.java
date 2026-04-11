@@ -28,6 +28,11 @@ public class AuthService {
     public RegisterResponse register(RegisterRequest request) {
         String normalizedEmail = request.email().trim().toLowerCase();
         String normalizedUsername = normalizeUsername(request);
+        String submittedName = request.name() == null ? "" : request.name().trim();
+
+        if (!request.password().equals(request.confirmPassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
 
         normalizedUsername = ensureUniqueUsername(normalizedUsername);
 
@@ -37,7 +42,7 @@ public class AuthService {
 
         User user = new User();
         user.setUsername(normalizedUsername);
-        user.setName(request.name().trim());
+        user.setName(submittedName.isBlank() ? normalizedUsername : submittedName);
         user.setEmail(normalizedEmail);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
 
@@ -98,7 +103,8 @@ public class AuthService {
             return requested.trim().toLowerCase();
         }
 
-        String base = request.name().trim().toLowerCase().replaceAll("[^a-z0-9]", "");
+        String name = request.name() == null ? "" : request.name().trim();
+        String base = name.toLowerCase().replaceAll("[^a-z0-9]", "");
         if (base.isBlank()) {
             base = "user";
         }
@@ -118,4 +124,5 @@ public class AuthService {
         }
         return candidate;
     }
+
 }
